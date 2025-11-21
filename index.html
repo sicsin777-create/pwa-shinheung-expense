@@ -1,953 +1,367 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
-    <meta name="theme-color" content="#0b3d91" />
-
-    <title>신흥중 야구부 가계부</title>
-
-    <!-- PWA 설정 -->
-    <link rel="manifest" href="manifest.json" />
-    <link rel="icon" href="icons/icon-192.png" />
-
-    <style>
-      :root {
-        font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
-        color: #0f172a;
-        background: #0b3d91;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        background: #0b3d91;
-      }
-
-      .app-shell {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        background: linear-gradient(
-          180deg,
-          #0b3d91 0%,
-          #0b3d91 38%,
-          #f8fafc 38%,
-          #f8fafc 100%
-        );
-        padding: 12px;
-      }
-
-      .card {
-        flex: 1;
-        background: #ffffff;
-        border-radius: 28px;
-        box-shadow: 0 28px 60px rgba(11, 61, 145, 0.25);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      }
-
-      header {
-        background: linear-gradient(135deg, #0b3d91, #0b7be6);
-        padding: 22px 20px 26px;
-        color: #ffffff;
-      }
-
-      header .top-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-      }
-
-      header h1 {
-        margin: 0;
-        font-size: 1.45rem;
-        letter-spacing: 0.18em;
-        font-weight: 800;
-      }
-
-      header .subtitle {
-        margin-top: 4px;
-        font-size: 0.9rem;
-        opacity: 0.9;
-      }
-
-      header .month-box {
-        margin-top: 12px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: rgba(15, 23, 42, 0.28);
-        font-size: 0.85rem;
-      }
-
-      header .month-box select {
-        border: none;
-        background: transparent;
-        color: #e5f1ff;
-        font: inherit;
-        outline: none;
-      }
-
-      header .month-box option {
-        color: #0f172a;
-      }
-
-      main {
-        padding: 18px 18px 20px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-        overflow-y: auto;
-      }
-
-      .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .summary-card {
-        border-radius: 16px;
-        padding: 10px 10px 12px;
-        background: #f1f5f9;
-      }
-
-      .summary-label {
-        font-size: 0.78rem;
-        color: #64748b;
-        margin-bottom: 4px;
-      }
-
-      .summary-value {
-        font-size: 0.98rem;
-        font-weight: 700;
-      }
-
-      .summary-value.negative {
-        color: #ef4444;
-      }
-
-      .summary-value.positive {
-        color: #16a34a;
-      }
-
-      .summary-edit {
-        margin-top: 6px;
-        font-size: 0.75rem;
-        color: #0b7be6;
-        cursor: pointer;
-        text-decoration: underline;
-      }
-
-      .section-title {
-        font-size: 0.96rem;
-        font-weight: 700;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-      }
-
-      .section-title span {
-        font-weight: 700;
-      }
-
-      .chip {
-        font-size: 0.8rem;
-        border-radius: 999px;
-        padding: 4px 8px;
-        background: #e2e8f0;
-        color: #475569;
-      }
-
-      .expense-list {
-        border-radius: 16px;
-        background: #f8fafc;
-        padding: 8px 0;
-        max-height: 260px;
-        overflow-y: auto;
-      }
-
-      .expense-empty {
-        padding: 28px 16px;
-        text-align: center;
-        font-size: 0.9rem;
-        color: #94a3b8;
-      }
-
-      .expense-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding: 10px 16px;
-        gap: 8px;
-      }
-
-      .expense-item + .expense-item {
-        border-top: 1px solid #e2e8f0;
-      }
-
-      .expense-main {
-        flex: 1;
-      }
-
-      .expense-cat {
-        font-size: 0.8rem;
-        color: #64748b;
-        margin-bottom: 2px;
-      }
-
-      .expense-desc {
-        font-size: 0.9rem;
-        font-weight: 500;
-        margin-bottom: 2px;
-      }
-
-      .expense-meta {
-        font-size: 0.75rem;
-        color: #94a3b8;
-      }
-
-      .expense-right {
-        text-align: right;
-        min-width: 90px;
-      }
-
-      .expense-amount {
-        font-weight: 700;
-        font-size: 0.96rem;
-      }
-
-      .expense-date {
-        font-size: 0.8rem;
-        color: #94a3b8;
-        margin-top: 2px;
-      }
-
-      .pill {
-        display: inline-flex;
-        padding: 2px 6px;
-        border-radius: 999px;
-        font-size: 0.7rem;
-        background: #e2e8f0;
-        color: #64748b;
-        margin-left: 4px;
-      }
-
-      .fab-wrap {
-        margin-top: auto;
-        padding-top: 12px;
-      }
-
-      .fab {
-        width: 100%;
-        border: none;
-        border-radius: 999px;
-        background: linear-gradient(135deg, #ff8c37, #f53264);
-        color: #ffffff;
-        font-size: 1.05rem;
-        font-weight: 700;
-        padding: 14px;
-        cursor: pointer;
-        box-shadow: 0 14px 24px rgba(245, 50, 100, 0.35);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-      }
-
-      .fab span.icon {
-        font-size: 1.1rem;
-      }
-
-      .fab:active {
-        transform: translateY(1px);
-        box-shadow: 0 10px 20px rgba(245, 50, 100, 0.35);
-      }
-
-      /* 모달 (지출 등록 폼) */
-
-      .modal-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.45);
-        display: none;
-        align-items: flex-end;
-        justify-content: center;
-        z-index: 40;
-      }
-
-      .modal-backdrop.open {
-        display: flex;
-      }
-
-      .modal-sheet {
-        width: 100%;
-        max-width: 520px;
-        background: #ffffff;
-        border-radius: 22px 22px 0 0;
-        padding: 14px 18px 18px;
-        box-shadow: 0 -18px 45px rgba(15, 23, 42, 0.3);
-      }
-
-      .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-      }
-
-      .modal-header h2 {
-        margin: 0;
-        font-size: 1rem;
-      }
-
-      .modal-close {
-        border: none;
-        background: none;
-        font-size: 1.4rem;
-        line-height: 1;
-        cursor: pointer;
-        color: #94a3b8;
-      }
-
-      form.expense-form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        max-height: min(70vh, 500px);
-        overflow-y: auto;
-        padding-right: 2px;
-      }
-
-      label.field {
-        display: flex;
-        flex-direction: column;
-        font-weight: 600;
-        font-size: 0.9rem;
-      }
-
-      label.field span.caption {
-        margin-bottom: 4px;
-      }
-
-      input,
-      select,
-      textarea {
-        border-radius: 12px;
-        border: 1px solid rgba(148, 163, 184, 0.6);
-        padding: 9px 11px;
-        font-size: 0.93rem;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        background: #ffffff;
-      }
-
-      input:focus,
-      select:focus,
-      textarea:focus {
-        outline: none;
-        border-color: #0b7be6;
-        box-shadow: 0 0 0 3px rgba(11, 123, 230, 0.2);
-      }
-
-      select {
-        appearance: none;
-        background-image: linear-gradient(45deg, transparent 50%, #0b3d91 50%),
-          linear-gradient(135deg, #0b3d91 50%, transparent 50%);
-        background-position: calc(100% - 14px) calc(0.75em + 2px),
-          calc(100% - 8px) calc(0.75em + 2px);
-        background-size: 6px 6px, 6px 6px;
-        background-repeat: no-repeat;
-      }
-
-      textarea {
-        min-height: 80px;
-        resize: vertical;
-      }
-
-      .hint {
-        margin-top: 3px;
-        font-size: 0.78rem;
-        color: #94a3b8;
-      }
-
-      .modal-footer {
-        margin-top: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .primary-btn {
-        border: none;
-        border-radius: 999px;
-        background: linear-gradient(135deg, #ff8c37, #f53264);
-        color: #ffffff;
-        font-size: 1rem;
-        font-weight: 700;
-        padding: 11px;
-        cursor: pointer;
-        box-shadow: 0 10px 20px rgba(245, 50, 100, 0.35);
-      }
-
-      .primary-btn:active {
-        transform: translateY(1px);
-        box-shadow: 0 7px 16px rgba(245, 50, 100, 0.35);
-      }
-
-      .note {
-        font-size: 0.78rem;
-        color: #94a3b8;
-        text-align: center;
-      }
-
-      @media (max-width: 500px) {
-        .app-shell {
-          padding: 0;
-        }
-
-        .card {
-          border-radius: 0;
-          box-shadow: none;
-        }
-
-        header {
-          padding-left: 18px;
-          padding-right: 18px;
-        }
-
-        main {
-          padding-left: 16px;
-          padding-right: 16px;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="app-shell">
-      <div class="card">
-        <header>
-          <div class="top-row">
-            <div>
-              <h1>신흥중 야구부</h1>
-              <div class="subtitle">집행부 전용 가계부</div>
-            </div>
-          </div>
-
-          <div class="month-box">
-            <span>예산 월</span>
-            <select id="monthSelect"></select>
-          </div>
-        </header>
-
-        <main>
-          <!-- 요약 카드 -->
-          <section>
-            <div class="summary-grid">
-              <div class="summary-card">
-                <div class="summary-label">이번달 예산</div>
-                <div id="summaryBudget" class="summary-value">₩0</div>
-                <div
-                  id="summaryBudgetEdit"
-                  class="summary-edit"
-                  role="button"
-                  tabindex="0"
-                >
-                  금액 수정
-                </div>
-              </div>
-
-              <div class="summary-card">
-                <div class="summary-label">지출 합계</div>
-                <div id="summarySpent" class="summary-value">₩0</div>
-                <div class="summary-label" style="margin-top: 6px">
-                  건수:
-                  <span id="summaryCount">0</span>건
-                </div>
-              </div>
-
-              <div class="summary-card">
-                <div class="summary-label">남은 예산</div>
-                <div
-                  id="summaryBalance"
-                  class="summary-value positive"
-                >
-                  ₩0
-                </div>
-                <div class="summary-label" style="margin-top: 6px">
-                  사용률:
-                  <span id="summaryUsage">0%</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- 지출 목록 -->
-          <section>
-            <div class="section-title">
-              <span>지출 내역</span>
-              <span class="chip" id="summaryPeriodLabel">이번달</span>
-            </div>
-            <div class="expense-list" id="expenseList">
-              <div class="expense-empty">
-                아직 등록된 지출이 없습니다.<br />아래 버튼으로 첫 지출을
-                추가해 보세요.
-              </div>
-            </div>
-          </section>
-
-          <div class="fab-wrap">
-            <button id="openModalBtn" class="fab">
-              <span class="icon">＋</span>
-              <span>지출 등록</span>
-            </button>
-          </div>
-        </main>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b3d91" />
+
+  <title>신흥중 야구부 가계부</title>
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <style>
+    /* ======================================
+       폰트 & 색상 기본값
+    ====================================== */
+    :root {
+      --blue: #0b3d91;
+      --blue-light: #1f5dd1;
+      --bg: #f2f5fa;
+      --text: #333;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ======================================
+       상단 헤더
+    ====================================== */
+    .header {
+      background: linear-gradient(135deg, var(--blue), var(--blue-light));
+      color: #fff;
+      padding: 40px 20px 60px 20px;
+      border-radius: 0 0 25px 25px;
+    }
+
+    .header-title {
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    /* ======================================
+       예산 카드 영역
+    ====================================== */
+    .card-container {
+      margin-top: -40px;
+      padding: 0 15px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 16px;
+      flex: 1;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .card-title {
+      font-size: 14px;
+      color: #777;
+    }
+    .card-value {
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 5px;
+      color: var(--blue);
+    }
+
+    /* ======================================
+       지출 목록
+    ====================================== */
+    .section-title {
+      margin: 25px 15px 10px 15px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .expense-item {
+      background: #fff;
+      margin: 10px 15px;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .expense-top {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+    }
+    .expense-memo {
+      color: #666;
+      margin-top: 6px;
+    }
+
+    /* ======================================
+       플로팅 버튼 (지출 추가)
+    ====================================== */
+    .fab {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 35px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      user-select: none;
+    }
+
+    /* ======================================
+       📌 모달 전체 UI 개선 (키보드 대응 포함)
+    ====================================== */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 999;
+    }
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-height: 85vh;
+      background: white;
+      border-radius: 20px 20px 0 0;
+      padding: 20px;
+      overflow-y: auto;
+      animation: slideUp .25s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity:0; transform: translateY(50px);} 
+      to   { opacity:1; transform: translateY(0);}
+    }
+
+    .modal-drag {
+      width: 70px; height: 6px;
+      background:#ccc;
+      border-radius:3px;
+      margin:0 auto 15px auto;
+    }
+
+    .modal-content input,
+    .modal-content select,
+    .modal-content textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .modal-content label {
+      margin-top: 15px;
+      display: block;
+      font-weight: 700;
+    }
+
+    #saveBtn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      background: var(--blue);
+      color: white;
+      font-size: 18px;
+      border: none;
+      margin-top: 20px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =======================
+       상단 헤더
+  ======================== -->
+  <div class="header">
+    <div class="header-title">신흥중 야구부</div>
+    <div>집행부 전용 가계부</div>
+
+    <div style="margin-top: 20px; font-size:18px; font-weight:700;">
+      예산 월  
+      <select id="budgetMonth" onchange="refreshDashboard()" style="
+        padding:8px; border-radius:10px; font-size:16px;">
+      </select>
+    </div>
+  </div>
+
+  <!-- =======================
+       예산 카드
+  ======================== -->
+  <div class="card-container">
+    <div class="card">
+      <div class="card-title">이번달 예산</div>
+      <div class="card-value" id="budgetTotal">₩0</div>
     </div>
 
-    <!-- 모달: 지출 등록 폼 -->
-    <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
-      <div class="modal-sheet">
-        <div class="modal-header">
-          <h2>지출 등록</h2>
-          <button class="modal-close" id="closeModalBtn" aria-label="닫기">
-            ×
-          </button>
-        </div>
-
-        <form id="expenseForm" class="expense-form" autocomplete="off">
-          <label class="field">
-            <span class="caption">등록자</span>
-            <input
-              type="text"
-              name="submittedBy"
-              id="submittedBy"
-              placeholder="예: 이승현"
-              required
-            />
-          </label>
-
-          <label class="field">
-            <span class="caption">지출일</span>
-            <input type="date" name="date" id="date" required />
-          </label>
-
-          <label class="field">
-            <span class="caption">카테고리</span>
-            <select name="category" id="category" required>
-              <option value="">카테고리 선택</option>
-              <option>훈련용품</option>
-              <option>대회지원</option>
-              <option>식비/간식</option>
-              <option>교통비</option>
-              <option>기타</option>
-            </select>
-          </label>
-
-          <label class="field">
-            <span class="caption">예산월</span>
-            <input
-              type="month"
-              name="budgetMonth"
-              id="budgetMonth"
-              required
-            />
-            <div class="hint">보통 해당 지출이 속한 달 (예: 2025-11)</div>
-          </label>
-
-          <label class="field">
-            <span class="caption">금액</span>
-            <input
-              type="number"
-              name="amount"
-              id="amount"
-              min="0"
-              step="1000"
-              placeholder="₩"
-              required
-            />
-          </label>
-
-          <label class="field">
-            <span class="caption">내용</span>
-            <textarea
-              name="description"
-              id="description"
-              rows="3"
-              placeholder="무슨 용도였는지 적어주세요"
-            ></textarea>
-          </label>
-
-          <label class="field">
-            <span class="caption">영수증 링크 (선택)</span>
-            <input
-              type="url"
-              name="receiptLink"
-              id="receiptLink"
-              placeholder="https://"
-            />
-          </label>
-
-          <div class="modal-footer">
-            <button type="submit" class="primary-btn">저장하기</button>
-            <div class="note">
-              지금은 이 기기(브라우저)에만 저장됩니다.<br />
-              나중에 원하면 Google Sheet랑 연결해서<br />
-              전체 집행부가 같이 볼 수 있게 바꿀 수 있어요.
-            </div>
-          </div>
-        </form>
-      </div>
+    <div class="card">
+      <div class="card-title">지출 합계</div>
+      <div class="card-value" id="expenseTotal">₩0</div>
     </div>
 
-    <script>
-      /*************************************************
-       * 간단 상태 & 저장 (localStorage)
-       *************************************************/
-      const STORAGE_KEY = "shinhung-expense-v1";
+    <div class="card">
+      <div class="card-title">남은 예산</div>
+      <div class="card-value" id="budgetRemain">₩0</div>
+    </div>
+  </div>
 
-      const state = {
-        months: {}, // "2025-11": { budget: number, expenses: [...] }
+  <!-- =======================
+       지출 목록
+  ======================== -->
+  <div class="section-title">지출 내역</div>
+  <div id="expenseList"></div>
+
+  <!-- 플로팅 버튼 -->
+  <div class="fab" onclick="openModal()">＋</div>
+
+  <!-- =======================
+       📌 지출 등록 모달
+  ======================== -->
+  <div id="expenseModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-drag"></div>
+
+      <h2>지출 등록</h2>
+
+      <label>등록자</label>
+      <input id="inputName" placeholder="예: 이승현" />
+
+      <label>지출일</label>
+      <input id="inputDate" type="date" />
+
+      <label>카테고리</label>
+      <select id="inputCategory">
+        <option value="">카테고리 선택</option>
+        <option>식비</option>
+        <option>용품</option>
+        <option>대회비</option>
+        <option>유류비</option>
+        <option>기타</option>
+      </select>
+
+      <label>예산월</label>
+      <input id="inputBudget" type="month" />
+
+      <label>금액</label>
+      <input id="inputAmount" type="number" inputmode="numeric" placeholder="₩" />
+
+      <label>내용</label>
+      <textarea id="inputMemo" rows="4" placeholder="무슨 용도였는지 적어주세요"></textarea>
+
+      <button id="saveBtn" onclick="saveExpense()">저장하기</button>
+
+    </div>
+  </div>
+
+  <!-- =======================
+       JS - 중심 로직
+  ======================== -->
+  <script>
+    let expenses = [];
+
+    // 모달 열기/닫기
+    function openModal() {
+      document.getElementById("expenseModal").classList.add("show");
+    }
+    function closeModal() {
+      document.getElementById("expenseModal").classList.remove("show");
+    }
+
+    // 외부 클릭 시 닫기
+    window.onclick = (e) => {
+      if (e.target.classList.contains("modal")) closeModal();
+    };
+
+    // 예산 월 드롭다운
+    function initBudgetMonth() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+
+      document.getElementById("budgetMonth").innerHTML = `
+        <option value="${yyyy}-${mm}">${yyyy}/${mm}</option>
+      `;
+    }
+
+    // 저장
+    function saveExpense() {
+      const item = {
+        name: inputName.value,
+        date: inputDate.value,
+        category: inputCategory.value,
+        budget: inputBudget.value,
+        amount: Number(inputAmount.value),
+        memo: inputMemo.value,
       };
 
-      function loadState() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return;
-          const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed === "object") {
-            Object.assign(state, parsed);
-          }
-        } catch (e) {
-          console.warn("Failed to load state", e);
-        }
+      expenses.push(item);
+      closeModal();
+      renderExpenses();
+      refreshDashboard();
+    }
+
+    // 대시보드 업데이트
+    function refreshDashboard() {
+      let month = document.getElementById("budgetMonth").value;
+
+      let filtered = expenses.filter(x => x.budget === month);
+      let total = filtered.reduce((sum, x) => sum + x.amount, 0);
+
+      document.getElementById("budgetTotal").textContent = "₩0";  // 필요하면 연동
+      document.getElementById("expenseTotal").textContent = "₩" + total.toLocaleString();
+      document.getElementById("budgetRemain").textContent = "₩" + (0 - total).toLocaleString();
+    }
+
+    // 지출 목록
+    function renderExpenses() {
+      let html = "";
+      for (let x of expenses) {
+        html += `
+          <div class="expense-item">
+            <div class="expense-top">
+              <div>${x.category}</div>
+              <div>₩${x.amount.toLocaleString()}</div>
+            </div>
+            <div class="expense-memo">${x.memo}</div>
+          </div>
+        `;
       }
+      document.getElementById("expenseList").innerHTML = html;
+    }
 
-      function saveState() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) {
-          console.warn("Failed to save state", e);
-        }
-      }
+    // 초기화
+    initBudgetMonth();
+  </script>
 
-      /*************************************************
-       * 유틸 함수
-       *************************************************/
-      function formatCurrency(num) {
-        const n = Number(num) || 0;
-        return "₩" + n.toLocaleString("ko-KR");
-      }
+  <!-- PWA 등록 -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+  </script>
 
-      function getCurrentMonthValue() {
-        const sel = document.getElementById("monthSelect");
-        return sel.value;
-      }
-
-      function ensureMonth(month) {
-        if (!state.months[month]) {
-          state.months[month] = {
-            budget: 0,
-            expenses: [],
-          };
-        }
-        return state.months[month];
-      }
-
-      function getMonthSummary(month) {
-        const m = ensureMonth(month);
-        const total = m.expenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
-        const count = m.expenses.length;
-        const budget = Number(m.budget) || 0;
-        const balance = budget - total;
-        const usage = budget > 0 ? Math.round((total / budget) * 100) : 0;
-        return { budget, total, balance, count, usage };
-      }
-
-      /*************************************************
-       * 렌더링
-       *************************************************/
-      function renderMonthOptions() {
-        const sel = document.getElementById("monthSelect");
-        sel.innerHTML = "";
-
-        // 기존에 사용한 달 + 현재달 기준으로 앞뒤 3개월 자동 생성
-        const usedMonths = new Set(Object.keys(state.months || {}));
-        const today = new Date();
-        const baseMonth =
-          today.getFullYear() +
-          "-" +
-          String(today.getMonth() + 1).padStart(2, "0");
-        usedMonths.add(baseMonth);
-
-        const monthsArr = Array.from(usedMonths).sort();
-        monthsArr.forEach((m) => {
-          const opt = document.createElement("option");
-          opt.value = m;
-          opt.textContent = m.replace("-", " / ");
-          sel.appendChild(opt);
-        });
-
-        sel.value = baseMonth;
-        if (!sel.value && monthsArr.length > 0) {
-          sel.value = monthsArr[0];
-        }
-
-        document.getElementById("budgetMonth").value = sel.value;
-      }
-
-      function renderSummary() {
-        const month = getCurrentMonthValue();
-        const summary = getMonthSummary(month);
-
-        document.getElementById("summaryBudget").textContent = formatCurrency(
-          summary.budget
-        );
-        document.getElementById("summarySpent").textContent =
-          formatCurrency(summary.total);
-        const balanceEl = document.getElementById("summaryBalance");
-        balanceEl.textContent = formatCurrency(summary.balance);
-        balanceEl.classList.toggle("negative", summary.balance < 0);
-        balanceEl.classList.toggle("positive", summary.balance >= 0);
-        document.getElementById("summaryCount").textContent = summary.count;
-        document.getElementById("summaryUsage").textContent =
-          summary.usage + "%";
-
-        // 라벨
-        document.getElementById("summaryPeriodLabel").textContent =
-          month.replace("-", "월 ") + " 가계부";
-      }
-
-      function renderExpenses() {
-        const month = getCurrentMonthValue();
-        const m = ensureMonth(month);
-        const listEl = document.getElementById("expenseList");
-        listEl.innerHTML = "";
-
-        if (!m.expenses.length) {
-          const empty = document.createElement("div");
-          empty.className = "expense-empty";
-          empty.innerHTML =
-            "아직 등록된 지출이 없습니다.<br>아래 버튼으로 첫 지출을 추가해 보세요.";
-          listEl.appendChild(empty);
-          return;
-        }
-
-        m.expenses
-          .slice()
-          .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
-          .forEach((exp) => {
-            const item = document.createElement("div");
-            item.className = "expense-item";
-
-            const main = document.createElement("div");
-            main.className = "expense-main";
-
-            const cat = document.createElement("div");
-            cat.className = "expense-cat";
-            cat.textContent = exp.category || "기타";
-
-            const desc = document.createElement("div");
-            desc.className = "expense-desc";
-            desc.textContent = exp.description || "(내용 없음)";
-
-            const meta = document.createElement("div");
-            meta.className = "expense-meta";
-            meta.textContent =
-              (exp.submittedBy || "등록자 미입력") +
-              (exp.receiptLink ? "" : "  ·  영수증 미첨부");
-
-            if (exp.receiptLink) {
-              const pill = document.createElement("span");
-              pill.className = "pill";
-              pill.textContent = "영수증";
-              meta.appendChild(pill);
-            }
-
-            main.appendChild(cat);
-            main.appendChild(desc);
-            main.appendChild(meta);
-
-            const right = document.createElement("div");
-            right.className = "expense-right";
-
-            const amt = document.createElement("div");
-            amt.className = "expense-amount";
-            amt.textContent = formatCurrency(exp.amount || 0);
-
-            const date = document.createElement("div");
-            date.className = "expense-date";
-            date.textContent = exp.date || "";
-
-            right.appendChild(amt);
-            right.appendChild(date);
-
-            item.appendChild(main);
-            item.appendChild(right);
-            listEl.appendChild(item);
-          });
-      }
-
-      function renderAll() {
-        renderSummary();
-        renderExpenses();
-      }
-
-      /*************************************************
-       * 이벤트 핸들러
-       *************************************************/
-      function openModal() {
-        const backdrop = document.getElementById("modalBackdrop");
-        backdrop.classList.add("open");
-        backdrop.setAttribute("aria-hidden", "false");
-
-        // 기본값 채우기
-        const month = getCurrentMonthValue();
-        document.getElementById("budgetMonth").value = month;
-
-        const today = new Date();
-        const yyyyMmDd =
-          today.getFullYear() +
-          "-" +
-          String(today.getMonth() + 1).padStart(2, "0") +
-          "-" +
-          String(today.getDate()).padStart(2, "0");
-        document.getElementById("date").value = yyyyMmDd;
-
-        document.getElementById("submittedBy").focus();
-      }
-
-      function closeModal() {
-        const backdrop = document.getElementById("modalBackdrop");
-        backdrop.classList.remove("open");
-        backdrop.setAttribute("aria-hidden", "true");
-      }
-
-      function handleFormSubmit(e) {
-        e.preventDefault();
-        const form = e.target;
-
-        const data = {
-          submittedBy: form.submittedBy.value.trim(),
-          date: form.date.value,
-          category: form.category.value,
-          budgetMonth: form.budgetMonth.value,
-          amount: Number(form.amount.value || 0),
-          description: form.description.value.trim(),
-          receiptLink: form.receiptLink.value.trim(),
-          createdAt: new Date().toISOString(),
-        };
-
-        // 해당 예산 월 데이터에 push
-        const m = ensureMonth(data.budgetMonth);
-        m.expenses.push(data);
-
-        // 예산 월이 현재 선택된 월이 아니면, 현재 셀렉트도 그 달로 맞춰줌
-        const sel = document.getElementById("monthSelect");
-        if (sel.value !== data.budgetMonth) {
-          // 옵션 없으면 만들어 주기
-          let has = false;
-          Array.from(sel.options).forEach((opt) => {
-            if (opt.value === data.budgetMonth) has = true;
-          });
-          if (!has) {
-            const opt = document.createElement("option");
-            opt.value = data.budgetMonth;
-            opt.textContent = data.budgetMonth.replace("-", " / ");
-            sel.appendChild(opt);
-          }
-          sel.value = data.budgetMonth;
-        }
-
-        saveState();
-        renderAll();
-        closeModal();
-        form.reset();
-      }
-
-      function handleBudgetEdit() {
-        const month = getCurrentMonthValue();
-        const m = ensureMonth(month);
-        const currentBudget = Number(m.budget) || 0;
-        const input = prompt(
-          `${month} 예산 금액을 입력하세요.`,
-          currentBudget ? currentBudget : ""
-        );
-        if (input === null) return;
-        const value = Number(input.replace(/[, ]/g, "")) || 0;
-        m.budget = value;
-        saveState();
-        renderAll();
-      }
-
-      /*************************************************
-       * 초기화
-       *************************************************/
-      document.addEventListener("DOMContentLoaded", () => {
-        loadState();
-
-        renderMonthOptions();
-        renderAll();
-
-        document
-          .getElementById("monthSelect")
-          .addEventListener("change", () => {
-            document.getElementById("budgetMonth").value =
-              getCurrentMonthValue();
-            renderAll();
-          });
-
-        document
-          .getElementById("openModalBtn")
-          .addEventListener("click", openModal);
-        document
-          .getElementById("closeModalBtn")
-          .addEventListener("click", closeModal);
-
-        document
-          .getElementById("modalBackdrop")
-          .addEventListener("click", (e) => {
-            if (e.target.id === "modalBackdrop") closeModal();
-          });
-
-        document
-          .getElementById("expenseForm")
-          .addEventListener("submit", handleFormSubmit);
-
-        document
-          .getElementById("summaryBudgetEdit")
-          .addEventListener("click", handleBudgetEdit);
-        document
-          .getElementById("summaryBudgetEdit")
-          .addEventListener("keypress", (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              handleBudgetEdit();
-            }
-          });
-
-        // PWA 서비스 워커 등록
-        if ("serviceWorker" in navigator) {
-          navigator.serviceWorker
-            .register("service-worker.js")
-            .catch((err) => console.log("SW registration failed", err));
-        }
-      });
-    </script>
-  </body>
+</body>
 </html>
