@@ -1,9 +1,22 @@
 {
-  "name": "신흥중 야구부 지출 등록",
-  "short_name": "야구부 지출",
-  "start_url": "index.html",
+  "name": "신흥중 야구부 지출등록",
+  "short_name": "야구부지출",
+  "description": "신흥중 야구부 집행부 전용 지출 등록 앱",
+  "start_url": "/pwa-shinheung-expense/index.html",
+  "scope": "/pwa-shinheung-expense/",
   "display": "standalone",
   "background_color": "#0b3d91",
   "theme_color": "#0b3d91",
-  "icons": []
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
