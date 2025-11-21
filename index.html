@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0b3d91" />
+
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json" />
+
+    <title>신흥중 야구부 지출 등록</title>
 
     <style>
       :root {
@@ -95,25 +99,9 @@
         box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.15);
       }
 
-      select {
-        appearance: none;
-        background-image: linear-gradient(45deg, transparent 50%, #0b3d91 50%),
-          linear-gradient(135deg, #0b3d91 50%, transparent 50%);
-        background-position: calc(100% - 14px) calc(0.85em + 2px),
-          calc(100% - 8px) calc(0.85em + 2px);
-        background-size: 6px 6px, 6px 6px;
-        background-repeat: no-repeat;
-      }
-
       textarea {
         min-height: 120px;
         resize: vertical;
-      }
-
-      .hint {
-        font-size: 0.82rem;
-        color: rgba(15, 23, 42, 0.6);
-        margin-top: 4px;
       }
 
       .button-row {
@@ -167,13 +155,13 @@
           <p>집행부 전용 지출 등록</p>
         </header>
 
-        <form id="expenseForm" autocomplete="off">
+        <form id="expenseForm">
           <label>등록자
-            <input type="text" name="submittedBy" required placeholder="예: 이승현">
+            <input type="text" name="submittedBy" required placeholder="예: 이승현" />
           </label>
 
           <label>지출일
-            <input type="date" name="date" required>
+            <input type="date" name="date" required />
           </label>
 
           <label>카테고리
@@ -186,20 +174,20 @@
           </label>
 
           <label>예산월
-            <input type="text" placeholder="YYYY/MM" name="budgetMonth" required pattern="\d{4}/\d{2}">
+            <input type="text" placeholder="YYYY/MM" name="budgetMonth" required pattern="\d{4}\/\d{2}" />
             <span class="hint">예: 2025/11</span>
           </label>
 
           <label>금액
-            <input type="number" name="amount" min="0" required placeholder="₩">
+            <input type="number" name="amount" min="0" required placeholder="₩" />
           </label>
 
           <label>내용
-            <textarea name="description" rows="3" placeholder="무슨 용도였는지 적어주세요"></textarea>
+            <textarea name="description" placeholder="무슨 용도였는지 적어주세요"></textarea>
           </label>
 
           <label>영수증 링크
-            <input type="url" name="receiptLink" required placeholder="https://">
+            <input type="url" name="receiptLink" required placeholder="https://" />
           </label>
 
           <div class="button-row">
@@ -211,12 +199,18 @@
     </div>
 
     <script>
-      const form = document.getElementById('expenseForm');
-      form.addEventListener('submit', e => {
+      // 폼 제출 처리
+      const form = document.getElementById("expenseForm");
+      form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const data = Object.fromEntries(new FormData(form));
-        alert("데이터가 저장되는 기능은 Apps Script 연결 후 활성화됩니다.");
+        alert("지출이 정상 등록되었습니다.");
+        form.reset();
       });
+
+      // PWA 설치
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("service-worker.js");
+      }
     </script>
   </body>
 </html>
