@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <meta name="theme-color" content="#0b3d91" />
 
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json" />
+    <title>신흥중 야구부 가계부</title>
 
-    <title>신흥중 야구부 지출 등록</title>
+    <!-- PWA 설정 -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icons/icon-192.png" />
 
     <style>
       :root {
-        font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
+        font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
         color: #0f172a;
         background: #0b3d91;
       }
@@ -31,15 +36,21 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
-        background: linear-gradient(180deg, #0b3d91 0%, #0b3d91 40%, #f8fafc 40%, #f8fafc 100%);
+        background: linear-gradient(
+          180deg,
+          #0b3d91 0%,
+          #0b3d91 38%,
+          #f8fafc 38%,
+          #f8fafc 100%
+        );
         padding: 12px;
       }
 
       .card {
         flex: 1;
-        background: #fff;
-        border-radius: 32px;
-        box-shadow: 0 30px 70px rgba(11, 61, 145, 0.25);
+        background: #ffffff;
+        border-radius: 28px;
+        box-shadow: 0 28px 60px rgba(11, 61, 145, 0.25);
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -47,90 +58,360 @@
 
       header {
         background: linear-gradient(135deg, #0b3d91, #0b7be6);
-        padding: 28px 24px 32px;
-        color: #fff;
+        padding: 22px 20px 26px;
+        color: #ffffff;
+      }
+
+      header .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
       }
 
       header h1 {
         margin: 0;
-        font-size: 1.5rem;
-        letter-spacing: 0.2em;
+        font-size: 1.45rem;
+        letter-spacing: 0.18em;
+        font-weight: 800;
       }
 
-      header p {
-        margin: 6px 0 0;
-        font-size: 0.95rem;
+      header .subtitle {
+        margin-top: 4px;
+        font-size: 0.9rem;
         opacity: 0.9;
       }
 
-      form {
-        padding: 20px 24px 28px;
+      header .month-box {
+        margin-top: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.28);
+        font-size: 0.85rem;
+      }
+
+      header .month-box select {
+        border: none;
+        background: transparent;
+        color: #e5f1ff;
+        font: inherit;
+        outline: none;
+      }
+
+      header .month-box option {
+        color: #0f172a;
+      }
+
+      main {
+        padding: 18px 18px 20px;
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 14px;
+        gap: 18px;
         overflow-y: auto;
       }
 
-      label {
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .summary-card {
+        border-radius: 16px;
+        padding: 10px 10px 12px;
+        background: #f1f5f9;
+      }
+
+      .summary-label {
+        font-size: 0.78rem;
+        color: #64748b;
+        margin-bottom: 4px;
+      }
+
+      .summary-value {
+        font-size: 0.98rem;
+        font-weight: 700;
+      }
+
+      .summary-value.negative {
+        color: #ef4444;
+      }
+
+      .summary-value.positive {
+        color: #16a34a;
+      }
+
+      .summary-edit {
+        margin-top: 6px;
+        font-size: 0.75rem;
+        color: #0b7be6;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+
+      .section-title {
+        font-size: 0.96rem;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .section-title span {
+        font-weight: 700;
+      }
+
+      .chip {
+        font-size: 0.8rem;
+        border-radius: 999px;
+        padding: 4px 8px;
+        background: #e2e8f0;
+        color: #475569;
+      }
+
+      .expense-list {
+        border-radius: 16px;
+        background: #f8fafc;
+        padding: 8px 0;
+        max-height: 260px;
+        overflow-y: auto;
+      }
+
+      .expense-empty {
+        padding: 28px 16px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #94a3b8;
+      }
+
+      .expense-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 10px 16px;
+        gap: 8px;
+      }
+
+      .expense-item + .expense-item {
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .expense-main {
+        flex: 1;
+      }
+
+      .expense-cat {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-bottom: 2px;
+      }
+
+      .expense-desc {
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+
+      .expense-meta {
+        font-size: 0.75rem;
+        color: #94a3b8;
+      }
+
+      .expense-right {
+        text-align: right;
+        min-width: 90px;
+      }
+
+      .expense-amount {
+        font-weight: 700;
+        font-size: 0.96rem;
+      }
+
+      .expense-date {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-top: 2px;
+      }
+
+      .pill {
+        display: inline-flex;
+        padding: 2px 6px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        background: #e2e8f0;
+        color: #64748b;
+        margin-left: 4px;
+      }
+
+      .fab-wrap {
+        margin-top: auto;
+        padding-top: 12px;
+      }
+
+      .fab {
+        width: 100%;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #ff8c37, #f53264);
+        color: #ffffff;
+        font-size: 1.05rem;
+        font-weight: 700;
+        padding: 14px;
+        cursor: pointer;
+        box-shadow: 0 14px 24px rgba(245, 50, 100, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .fab span.icon {
+        font-size: 1.1rem;
+      }
+
+      .fab:active {
+        transform: translateY(1px);
+        box-shadow: 0 10px 20px rgba(245, 50, 100, 0.35);
+      }
+
+      /* 모달 (지출 등록 폼) */
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        z-index: 40;
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .modal-sheet {
+        width: 100%;
+        max-width: 520px;
+        background: #ffffff;
+        border-radius: 22px 22px 0 0;
+        padding: 14px 18px 18px;
+        box-shadow: 0 -18px 45px rgba(15, 23, 42, 0.3);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .modal-close {
+        border: none;
+        background: none;
+        font-size: 1.4rem;
+        line-height: 1;
+        cursor: pointer;
+        color: #94a3b8;
+      }
+
+      form.expense-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: min(70vh, 500px);
+        overflow-y: auto;
+        padding-right: 2px;
+      }
+
+      label.field {
         display: flex;
         flex-direction: column;
         font-weight: 600;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
+      }
+
+      label.field span.caption {
+        margin-bottom: 4px;
       }
 
       input,
       select,
       textarea {
-        margin-top: 6px;
-        border-radius: 14px;
-        border: 1px solid rgba(15, 23, 42, 0.15);
-        padding: 12px 14px;
-        font-size: 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        padding: 9px 11px;
+        font-size: 0.93rem;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        background: #fff;
+        background: #ffffff;
       }
 
       input:focus,
       select:focus,
       textarea:focus {
         outline: none;
-        border-color: #0b3d91;
-        box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.15);
+        border-color: #0b7be6;
+        box-shadow: 0 0 0 3px rgba(11, 123, 230, 0.2);
+      }
+
+      select {
+        appearance: none;
+        background-image: linear-gradient(45deg, transparent 50%, #0b3d91 50%),
+          linear-gradient(135deg, #0b3d91 50%, transparent 50%);
+        background-position: calc(100% - 14px) calc(0.75em + 2px),
+          calc(100% - 8px) calc(0.75em + 2px);
+        background-size: 6px 6px, 6px 6px;
+        background-repeat: no-repeat;
       }
 
       textarea {
-        min-height: 120px;
+        min-height: 80px;
         resize: vertical;
       }
 
-      .button-row {
+      .hint {
+        margin-top: 3px;
+        font-size: 0.78rem;
+        color: #94a3b8;
+      }
+
+      .modal-footer {
+        margin-top: 10px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
       }
 
-      button {
+      .primary-btn {
         border: none;
-        border-radius: 26px;
+        border-radius: 999px;
         background: linear-gradient(135deg, #ff8c37, #f53264);
-        color: #fff;
-        font-size: 1.1rem;
+        color: #ffffff;
+        font-size: 1rem;
         font-weight: 700;
-        padding: 14px;
+        padding: 11px;
         cursor: pointer;
-        box-shadow: 0 14px 24px rgba(245, 50, 100, 0.35);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      button:active {
-        transform: translateY(1px);
         box-shadow: 0 10px 20px rgba(245, 50, 100, 0.35);
       }
 
+      .primary-btn:active {
+        transform: translateY(1px);
+        box-shadow: 0 7px 16px rgba(245, 50, 100, 0.35);
+      }
+
       .note {
-        font-size: 0.82rem;
-        color: rgba(15, 23, 42, 0.7);
+        font-size: 0.78rem;
+        color: #94a3b8;
         text-align: center;
       }
 
@@ -143,6 +424,16 @@
           border-radius: 0;
           box-shadow: none;
         }
+
+        header {
+          padding-left: 18px;
+          padding-right: 18px;
+        }
+
+        main {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
       }
     </style>
   </head>
@@ -151,66 +442,512 @@
     <div class="app-shell">
       <div class="card">
         <header>
-          <h1>신흥중 야구부</h1>
-          <p>집행부 전용 지출 등록</p>
+          <div class="top-row">
+            <div>
+              <h1>신흥중 야구부</h1>
+              <div class="subtitle">집행부 전용 가계부</div>
+            </div>
+          </div>
+
+          <div class="month-box">
+            <span>예산 월</span>
+            <select id="monthSelect"></select>
+          </div>
         </header>
 
-        <form id="expenseForm">
-          <label>등록자
-            <input type="text" name="submittedBy" required placeholder="예: 이승현" />
+        <main>
+          <!-- 요약 카드 -->
+          <section>
+            <div class="summary-grid">
+              <div class="summary-card">
+                <div class="summary-label">이번달 예산</div>
+                <div id="summaryBudget" class="summary-value">₩0</div>
+                <div
+                  id="summaryBudgetEdit"
+                  class="summary-edit"
+                  role="button"
+                  tabindex="0"
+                >
+                  금액 수정
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-label">지출 합계</div>
+                <div id="summarySpent" class="summary-value">₩0</div>
+                <div class="summary-label" style="margin-top: 6px">
+                  건수:
+                  <span id="summaryCount">0</span>건
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-label">남은 예산</div>
+                <div
+                  id="summaryBalance"
+                  class="summary-value positive"
+                >
+                  ₩0
+                </div>
+                <div class="summary-label" style="margin-top: 6px">
+                  사용률:
+                  <span id="summaryUsage">0%</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 지출 목록 -->
+          <section>
+            <div class="section-title">
+              <span>지출 내역</span>
+              <span class="chip" id="summaryPeriodLabel">이번달</span>
+            </div>
+            <div class="expense-list" id="expenseList">
+              <div class="expense-empty">
+                아직 등록된 지출이 없습니다.<br />아래 버튼으로 첫 지출을
+                추가해 보세요.
+              </div>
+            </div>
+          </section>
+
+          <div class="fab-wrap">
+            <button id="openModalBtn" class="fab">
+              <span class="icon">＋</span>
+              <span>지출 등록</span>
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- 모달: 지출 등록 폼 -->
+    <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <h2>지출 등록</h2>
+          <button class="modal-close" id="closeModalBtn" aria-label="닫기">
+            ×
+          </button>
+        </div>
+
+        <form id="expenseForm" class="expense-form" autocomplete="off">
+          <label class="field">
+            <span class="caption">등록자</span>
+            <input
+              type="text"
+              name="submittedBy"
+              id="submittedBy"
+              placeholder="예: 이승현"
+              required
+            />
           </label>
 
-          <label>지출일
-            <input type="date" name="date" required />
+          <label class="field">
+            <span class="caption">지출일</span>
+            <input type="date" name="date" id="date" required />
           </label>
 
-          <label>카테고리
-            <select name="category" required>
+          <label class="field">
+            <span class="caption">카테고리</span>
+            <select name="category" id="category" required>
               <option value="">카테고리 선택</option>
               <option>훈련용품</option>
               <option>대회지원</option>
-              <option>용품비</option>
+              <option>식비/간식</option>
+              <option>교통비</option>
+              <option>기타</option>
             </select>
           </label>
 
-          <label>예산월
-            <input type="text" placeholder="YYYY/MM" name="budgetMonth" required pattern="\d{4}\/\d{2}" />
-            <span class="hint">예: 2025/11</span>
+          <label class="field">
+            <span class="caption">예산월</span>
+            <input
+              type="month"
+              name="budgetMonth"
+              id="budgetMonth"
+              required
+            />
+            <div class="hint">보통 해당 지출이 속한 달 (예: 2025-11)</div>
           </label>
 
-          <label>금액
-            <input type="number" name="amount" min="0" required placeholder="₩" />
+          <label class="field">
+            <span class="caption">금액</span>
+            <input
+              type="number"
+              name="amount"
+              id="amount"
+              min="0"
+              step="1000"
+              placeholder="₩"
+              required
+            />
           </label>
 
-          <label>내용
-            <textarea name="description" placeholder="무슨 용도였는지 적어주세요"></textarea>
+          <label class="field">
+            <span class="caption">내용</span>
+            <textarea
+              name="description"
+              id="description"
+              rows="3"
+              placeholder="무슨 용도였는지 적어주세요"
+            ></textarea>
           </label>
 
-          <label>영수증 링크
-            <input type="url" name="receiptLink" required placeholder="https://" />
+          <label class="field">
+            <span class="caption">영수증 링크 (선택)</span>
+            <input
+              type="url"
+              name="receiptLink"
+              id="receiptLink"
+              placeholder="https://"
+            />
           </label>
 
-          <div class="button-row">
-            <button type="submit">지출 등록</button>
-            <p class="note">등록 즉시 집행부 알림/예산 체크가 처리됩니다.</p>
+          <div class="modal-footer">
+            <button type="submit" class="primary-btn">저장하기</button>
+            <div class="note">
+              지금은 이 기기(브라우저)에만 저장됩니다.<br />
+              나중에 원하면 Google Sheet랑 연결해서<br />
+              전체 집행부가 같이 볼 수 있게 바꿀 수 있어요.
+            </div>
           </div>
         </form>
       </div>
     </div>
 
     <script>
-      // 폼 제출 처리
-      const form = document.getElementById("expenseForm");
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        alert("지출이 정상 등록되었습니다.");
-        form.reset();
-      });
+      /*************************************************
+       * 간단 상태 & 저장 (localStorage)
+       *************************************************/
+      const STORAGE_KEY = "shinhung-expense-v1";
 
-      // PWA 설치
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("service-worker.js");
+      const state = {
+        months: {}, // "2025-11": { budget: number, expenses: [...] }
+      };
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") {
+            Object.assign(state, parsed);
+          }
+        } catch (e) {
+          console.warn("Failed to load state", e);
+        }
       }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          console.warn("Failed to save state", e);
+        }
+      }
+
+      /*************************************************
+       * 유틸 함수
+       *************************************************/
+      function formatCurrency(num) {
+        const n = Number(num) || 0;
+        return "₩" + n.toLocaleString("ko-KR");
+      }
+
+      function getCurrentMonthValue() {
+        const sel = document.getElementById("monthSelect");
+        return sel.value;
+      }
+
+      function ensureMonth(month) {
+        if (!state.months[month]) {
+          state.months[month] = {
+            budget: 0,
+            expenses: [],
+          };
+        }
+        return state.months[month];
+      }
+
+      function getMonthSummary(month) {
+        const m = ensureMonth(month);
+        const total = m.expenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+        const count = m.expenses.length;
+        const budget = Number(m.budget) || 0;
+        const balance = budget - total;
+        const usage = budget > 0 ? Math.round((total / budget) * 100) : 0;
+        return { budget, total, balance, count, usage };
+      }
+
+      /*************************************************
+       * 렌더링
+       *************************************************/
+      function renderMonthOptions() {
+        const sel = document.getElementById("monthSelect");
+        sel.innerHTML = "";
+
+        // 기존에 사용한 달 + 현재달 기준으로 앞뒤 3개월 자동 생성
+        const usedMonths = new Set(Object.keys(state.months || {}));
+        const today = new Date();
+        const baseMonth =
+          today.getFullYear() +
+          "-" +
+          String(today.getMonth() + 1).padStart(2, "0");
+        usedMonths.add(baseMonth);
+
+        const monthsArr = Array.from(usedMonths).sort();
+        monthsArr.forEach((m) => {
+          const opt = document.createElement("option");
+          opt.value = m;
+          opt.textContent = m.replace("-", " / ");
+          sel.appendChild(opt);
+        });
+
+        sel.value = baseMonth;
+        if (!sel.value && monthsArr.length > 0) {
+          sel.value = monthsArr[0];
+        }
+
+        document.getElementById("budgetMonth").value = sel.value;
+      }
+
+      function renderSummary() {
+        const month = getCurrentMonthValue();
+        const summary = getMonthSummary(month);
+
+        document.getElementById("summaryBudget").textContent = formatCurrency(
+          summary.budget
+        );
+        document.getElementById("summarySpent").textContent =
+          formatCurrency(summary.total);
+        const balanceEl = document.getElementById("summaryBalance");
+        balanceEl.textContent = formatCurrency(summary.balance);
+        balanceEl.classList.toggle("negative", summary.balance < 0);
+        balanceEl.classList.toggle("positive", summary.balance >= 0);
+        document.getElementById("summaryCount").textContent = summary.count;
+        document.getElementById("summaryUsage").textContent =
+          summary.usage + "%";
+
+        // 라벨
+        document.getElementById("summaryPeriodLabel").textContent =
+          month.replace("-", "월 ") + " 가계부";
+      }
+
+      function renderExpenses() {
+        const month = getCurrentMonthValue();
+        const m = ensureMonth(month);
+        const listEl = document.getElementById("expenseList");
+        listEl.innerHTML = "";
+
+        if (!m.expenses.length) {
+          const empty = document.createElement("div");
+          empty.className = "expense-empty";
+          empty.innerHTML =
+            "아직 등록된 지출이 없습니다.<br>아래 버튼으로 첫 지출을 추가해 보세요.";
+          listEl.appendChild(empty);
+          return;
+        }
+
+        m.expenses
+          .slice()
+          .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
+          .forEach((exp) => {
+            const item = document.createElement("div");
+            item.className = "expense-item";
+
+            const main = document.createElement("div");
+            main.className = "expense-main";
+
+            const cat = document.createElement("div");
+            cat.className = "expense-cat";
+            cat.textContent = exp.category || "기타";
+
+            const desc = document.createElement("div");
+            desc.className = "expense-desc";
+            desc.textContent = exp.description || "(내용 없음)";
+
+            const meta = document.createElement("div");
+            meta.className = "expense-meta";
+            meta.textContent =
+              (exp.submittedBy || "등록자 미입력") +
+              (exp.receiptLink ? "" : "  ·  영수증 미첨부");
+
+            if (exp.receiptLink) {
+              const pill = document.createElement("span");
+              pill.className = "pill";
+              pill.textContent = "영수증";
+              meta.appendChild(pill);
+            }
+
+            main.appendChild(cat);
+            main.appendChild(desc);
+            main.appendChild(meta);
+
+            const right = document.createElement("div");
+            right.className = "expense-right";
+
+            const amt = document.createElement("div");
+            amt.className = "expense-amount";
+            amt.textContent = formatCurrency(exp.amount || 0);
+
+            const date = document.createElement("div");
+            date.className = "expense-date";
+            date.textContent = exp.date || "";
+
+            right.appendChild(amt);
+            right.appendChild(date);
+
+            item.appendChild(main);
+            item.appendChild(right);
+            listEl.appendChild(item);
+          });
+      }
+
+      function renderAll() {
+        renderSummary();
+        renderExpenses();
+      }
+
+      /*************************************************
+       * 이벤트 핸들러
+       *************************************************/
+      function openModal() {
+        const backdrop = document.getElementById("modalBackdrop");
+        backdrop.classList.add("open");
+        backdrop.setAttribute("aria-hidden", "false");
+
+        // 기본값 채우기
+        const month = getCurrentMonthValue();
+        document.getElementById("budgetMonth").value = month;
+
+        const today = new Date();
+        const yyyyMmDd =
+          today.getFullYear() +
+          "-" +
+          String(today.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(today.getDate()).padStart(2, "0");
+        document.getElementById("date").value = yyyyMmDd;
+
+        document.getElementById("submittedBy").focus();
+      }
+
+      function closeModal() {
+        const backdrop = document.getElementById("modalBackdrop");
+        backdrop.classList.remove("open");
+        backdrop.setAttribute("aria-hidden", "true");
+      }
+
+      function handleFormSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+
+        const data = {
+          submittedBy: form.submittedBy.value.trim(),
+          date: form.date.value,
+          category: form.category.value,
+          budgetMonth: form.budgetMonth.value,
+          amount: Number(form.amount.value || 0),
+          description: form.description.value.trim(),
+          receiptLink: form.receiptLink.value.trim(),
+          createdAt: new Date().toISOString(),
+        };
+
+        // 해당 예산 월 데이터에 push
+        const m = ensureMonth(data.budgetMonth);
+        m.expenses.push(data);
+
+        // 예산 월이 현재 선택된 월이 아니면, 현재 셀렉트도 그 달로 맞춰줌
+        const sel = document.getElementById("monthSelect");
+        if (sel.value !== data.budgetMonth) {
+          // 옵션 없으면 만들어 주기
+          let has = false;
+          Array.from(sel.options).forEach((opt) => {
+            if (opt.value === data.budgetMonth) has = true;
+          });
+          if (!has) {
+            const opt = document.createElement("option");
+            opt.value = data.budgetMonth;
+            opt.textContent = data.budgetMonth.replace("-", " / ");
+            sel.appendChild(opt);
+          }
+          sel.value = data.budgetMonth;
+        }
+
+        saveState();
+        renderAll();
+        closeModal();
+        form.reset();
+      }
+
+      function handleBudgetEdit() {
+        const month = getCurrentMonthValue();
+        const m = ensureMonth(month);
+        const currentBudget = Number(m.budget) || 0;
+        const input = prompt(
+          `${month} 예산 금액을 입력하세요.`,
+          currentBudget ? currentBudget : ""
+        );
+        if (input === null) return;
+        const value = Number(input.replace(/[, ]/g, "")) || 0;
+        m.budget = value;
+        saveState();
+        renderAll();
+      }
+
+      /*************************************************
+       * 초기화
+       *************************************************/
+      document.addEventListener("DOMContentLoaded", () => {
+        loadState();
+
+        renderMonthOptions();
+        renderAll();
+
+        document
+          .getElementById("monthSelect")
+          .addEventListener("change", () => {
+            document.getElementById("budgetMonth").value =
+              getCurrentMonthValue();
+            renderAll();
+          });
+
+        document
+          .getElementById("openModalBtn")
+          .addEventListener("click", openModal);
+        document
+          .getElementById("closeModalBtn")
+          .addEventListener("click", closeModal);
+
+        document
+          .getElementById("modalBackdrop")
+          .addEventListener("click", (e) => {
+            if (e.target.id === "modalBackdrop") closeModal();
+          });
+
+        document
+          .getElementById("expenseForm")
+          .addEventListener("submit", handleFormSubmit);
+
+        document
+          .getElementById("summaryBudgetEdit")
+          .addEventListener("click", handleBudgetEdit);
+        document
+          .getElementById("summaryBudgetEdit")
+          .addEventListener("keypress", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleBudgetEdit();
+            }
+          });
+
+        // PWA 서비스 워커 등록
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker
+            .register("service-worker.js")
+            .catch((err) => console.log("SW registration failed", err));
+        }
+      });
     </script>
   </body>
 </html>
