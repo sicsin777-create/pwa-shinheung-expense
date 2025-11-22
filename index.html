@@ -3,533 +3,348 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b3d91" />
+
   <title>신흥중 야구부 가계부</title>
-  <meta name="theme-color" content="#0d47a1" />
+
+  <!-- Manifest -->
   <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sanitize.css" />
 
   <style>
     body {
+      font-family: 'Pretendard', sans-serif;
       margin: 0;
-      font-family: 'Noto Sans KR', sans-serif;
-      background: #f2f4f7;
+      background: #f1f5f9;
+      color: #333;
     }
 
-    /* 상단 앱 바 */
-    .app-bar {
-      background: linear-gradient(135deg, #0d47a1, #1976d2);
+    .header {
+      background: linear-gradient(135deg, #0b3d91, #1976d2);
+      padding: 32px 20px;
       color: white;
-      padding: 28px 20px 40px;
-      border-bottom-left-radius: 35px;
-      border-bottom-right-radius: 35px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      border-bottom-left-radius: 32px;
+      border-bottom-right-radius: 32px;
     }
 
-    .app-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .title {
+      font-size: 32px;
+      font-weight: 800;
     }
 
-    .app-logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 8px;
-      object-fit: cover;
-      background: rgba(255,255,255,0.15);
-      padding: 4px;
-    }
-
-    .app-title-wrap {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .app-title {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .app-subtitle {
-      margin-top: 2px;
-      font-size: 13px;
-      opacity: 0.85;
-    }
-
-    .settings-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: none;
-      background: rgba(255,255,255,0.2);
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* 예산 월 선택 */
-    .month-select-container {
-      margin: 20px 15px 0;
-    }
-
-    .month-select {
-      padding: 10px 14px;
-      font-size: 15px;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-      background: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
-
-    /* 카드 3개 */
-    .cards {
-      margin-top: -12px;
-      display: flex;
-      gap: 10px;
-      padding: 0 15px;
-    }
-
-    .card {
-      background: white;
-      padding: 16px;
-      border-radius: 15px;
-      flex: 1;
-      text-align: left;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-    }
-
-    .card-title {
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 6px;
-    }
-
-    .card-value {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    /* 지출 내역 */
-    .section-title {
-      margin: 25px 0 8px;
-      padding: 0 15px;
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .empty {
-      text-align: center;
-      padding-top: 25px;
-      font-size: 15px;
-      opacity: 0.5;
-    }
-
-    /* 플로팅 버튼 */
-    .fab {
-      position: fixed;
-      bottom: 32px;
-      right: 24px;
-      width: 64px;
-      height: 64px;
-      background: #0d47a1;
-      color: white;
-      border-radius: 50%;
-      font-size: 36px;
-      text-align: center;
-      line-height: 64px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-      cursor: pointer;
-    }
-
-    /* ===== 설정 모달 ===== */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-
-    .modal.show {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #fff;
-      width: 92%;
-      max-width: 420px;
-      border-radius: 16px;
-      padding: 18px 18px 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .modal-title {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .modal-close {
-      border: none;
-      background: transparent;
-      font-size: 22px;
-      cursor: pointer;
-    }
-
-    .field-label {
-      font-size: 13px;
-      margin-top: 12px;
-      margin-bottom: 4px;
-      color: #444;
-    }
-
-    .token-input {
-      width: 100%;
-      padding: 9px 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-
-    .token-info {
-      font-size: 12px;
-      color: #777;
+    .subtitle {
+      font-size: 16px;
+      opacity: 0.8;
       margin-top: 4px;
     }
 
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-      flex-wrap: wrap;
+    .month-select {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.18);
+      padding: 10px 16px;
+      display: inline-block;
+      border-radius: 14px;
+      font-size: 18px;
+      backdrop-filter: blur(3px);
     }
+
+    .cards {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      padding: 0 20px;
+    }
+
+    .card {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    .card-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin-top: 10px;
+      color: #0b3d91;
+    }
+
+    .list-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 32px 20px 16px;
+    }
+
+    /* Floating button */
+    .fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #0b3d91;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+    }
+
+    /* Modal */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal {
+      background: white;
+      width: 90%;
+      max-width: 420px;
+      padding: 24px;
+      border-radius: 20px;
+    }
+
+    .input-box {
+      margin-top: 16px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    textarea { height: 90px; }
 
     .btn {
-      flex: 1;
-      padding: 9px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .btn-primary {
-      background: #0d47a1;
+      width: 100%;
+      margin-top: 20px;
+      background: #0b3d91;
       color: white;
-    }
-
-    .btn-secondary {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    .btn-danger {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-
-    .status-text {
-      margin-top: 8px;
-      font-size: 13px;
-    }
-
-    .status-ok {
-      color: #16a34a;
-    }
-
-    .status-error {
-      color: #dc2626;
+      padding: 14px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 18px;
+      cursor: pointer;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- 상단 바 -->
-  <div class="app-bar">
-    <div class="app-left">
-      <img src="icons/sh-logo.png" class="app-logo" alt="SH 로고" />
-      <div class="app-title-wrap">
-        <div class="app-title">신흥중 야구부</div>
-        <div class="app-subtitle">집행부 전용 가계부</div>
-      </div>
-    </div>
+<!-- ================= HEADER ================== -->
+<div class="header">
+  <div class="title">신흥중 야구부</div>
+  <div class="subtitle">집행부 전용 가계부</div>
 
-    <button class="settings-btn" onclick="openSettings()">
-      ⚙
-    </button>
-  </div>
-
-  <!-- 예산 월 선택 -->
-  <div class="month-select-container">
-    <select class="month-select" id="monthSelect">
-      <!-- 실제로는 JS에서 현재 월 기준으로 채울 예정 -->
+  <div class="month-select">
+    <select id="selectMonth">
       <option>2025 / 11</option>
-      <option>2025 / 10</option>
-      <option>2025 / 09</option>
+      <option>2025 / 12</option>
+      <option>2026 / 01</option>
     </select>
   </div>
+</div>
 
-  <!-- 카드 그룹 -->
-  <div class="cards">
-    <div class="card">
-      <div class="card-title">이번달 예산</div>
-      <div class="card-value" id="budget">₩0</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">지출 합계</div>
-      <div class="card-value" id="total">₩0</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">남은 예산</div>
-      <div class="card-value" id="leftBudget">₩0</div>
-    </div>
+<!-- ================= DASHBOARD ================= -->
+<div class="cards">
+  <div class="card">
+    <div class="card-title">이번달 예산</div>
+    <div class="card-value" id="budget">₩0</div>
   </div>
 
-  <!-- 지출 내역 -->
-  <div class="section-title">지출 내역</div>
-  <div class="empty" id="expenseEmpty">아직 등록된 내역 없음</div>
-
-  <!-- 플로팅 버튼: 나중에 지출 입력 모달 연결 -->
-  <div class="fab" onclick="alert('지출 입력 모달은 다음 단계에서 붙일거야')">+</div>
-
-  <!-- ===== 설정 모달 ===== -->
-  <div class="modal" id="settingsModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title">설정 - GitHub 토큰</div>
-        <button class="modal-close" onclick="closeSettings()">×</button>
-      </div>
-
-      <div id="tokenStatusLine" class="token-info">
-        현재 토큰 상태: <span id="tokenStatusText">없음</span>
-      </div>
-
-      <div class="field-label">새 GitHub 토큰 입력 (Fine-grained, Contents: Read & Write)</div>
-      <input id="tokenInput" class="token-input" type="password" placeholder="github_pat_..." />
-
-      <div class="token-info">
-        - 이 토큰은 이 브라우저(localStorage)에만 저장됨<br />
-        - 만료되면 여기서 새 토큰 넣고 저장하면 됨
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="saveToken()">토큰 저장</button>
-        <button class="btn btn-secondary" onclick="testToken()">연결 테스트</button>
-        <button class="btn btn-danger" onclick="clearToken()">토큰 삭제</button>
-      </div>
-
-      <div id="testResult" class="status-text"></div>
-    </div>
+  <div class="card">
+    <div class="card-title">지출 합계</div>
+    <div class="card-value" id="total">₩0</div>
   </div>
 
-  <script>
-    // ==============================
-    // GitHub 저장 설정
-    // ==============================
-    const OWNER = "sicsin777-create";  // 네 깃허브 아이디
-    const REPO = "pwa-shinheung-expense"; // 리포 이름
-    const EXPENSES_FILE = "data/expenses.json";
+  <div class="card">
+    <div class="card-title">남은 예산</div>
+    <div class="card-value" id="left">₩0</div>
+  </div>
+</div>
 
-    // ------------------------------
-    // 토큰 관련 유틸
-    // ------------------------------
-    function getToken() {
-      return localStorage.getItem("GH_PWA_TOKEN") || "";
-    }
+<div class="list-title">지출 내역</div>
+<div id="expenseList"></div>
 
-    function setToken(token) {
-      localStorage.setItem("GH_PWA_TOKEN", token);
-    }
+<!-- Floating Button -->
+<div class="fab" onclick="openModal()">+</div>
 
-    function maskToken(token) {
-      if (!token) return "없음";
-      if (token.length <= 8) return "****";
-      return token.slice(0, 4) + "..." + token.slice(-4);
-    }
+<!-- ================ Modal ================ -->
+<div class="modal-bg" id="modalBG">
+  <div class="modal">
+    <h2>지출 등록</h2>
 
-    // ------------------------------
-    // 설정 모달
-    // ------------------------------
-    function openSettings() {
-      const token = getToken();
-      const tokenStatusText = document.getElementById("tokenStatusText");
-      tokenStatusText.textContent = token ? `저장됨 (${maskToken(token)})` : "없음";
-      document.getElementById("tokenInput").value = "";
-      document.getElementById("testResult").textContent = "";
-      document.getElementById("testResult").className = "status-text";
-      document.getElementById("settingsModal").classList.add("show");
-    }
+    <div class="input-box">
+      <label>등록자</label>
+      <input id="writer" placeholder="예: 홍길동" />
+    </div>
 
-    function closeSettings() {
-      document.getElementById("settingsModal").classList.remove("show");
-    }
+    <div class="input-box">
+      <label>지출일</label>
+      <input id="date" type="date" />
+    </div>
 
-    function saveToken() {
-      const input = document.getElementById("tokenInput").value.trim();
-      if (!input) {
-        alert("토큰을 입력해 주세요.");
-        return;
-      }
-      setToken(input);
-      alert("토큰이 저장되었습니다.");
-      const tokenStatusText = document.getElementById("tokenStatusText");
-      tokenStatusText.textContent = `저장됨 (${maskToken(input)})`;
-      document.getElementById("tokenInput").value = "";
-    }
+    <div class="input-box">
+      <label>카테고리</label>
+      <select id="category">
+        <option>식비</option>
+        <option>용품</option>
+        <option>훈련비</option>
+        <option>기타</option>
+      </select>
+    </div>
 
-    function clearToken() {
-      if (!confirm("정말 토큰을 삭제할까요? 저장 기능이 동작하지 않습니다.")) return;
-      localStorage.removeItem("GH_PWA_TOKEN");
-      document.getElementById("tokenStatusText").textContent = "없음";
-      document.getElementById("testResult").textContent = "";
-      document.getElementById("testResult").className = "status-text";
-      alert("토큰이 삭제되었습니다.");
-    }
+    <div class="input-box">
+      <label>금액</label>
+      <input id="amount" type="number" />
+    </div>
 
-    // ------------------------------
-    // GitHub 연동 테스트
-    // ------------------------------
-    async function testToken() {
-      const token = getToken();
-      const resultEl = document.getElementById("testResult");
+    <div class="input-box">
+      <label>내용</label>
+      <textarea id="content"></textarea>
+    </div>
 
-      if (!token) {
-        resultEl.textContent = "❌ 토큰이 저장되어 있지 않습니다. 먼저 토큰을 저장해 주세요.";
-        resultEl.className = "status-text status-error";
-        return;
-      }
+    <div class="input-box">
+      <label>영수증 이미지</label>
+      <input id="receiptFile" type="file" accept="image/*" />
+    </div>
 
-      resultEl.textContent = "⏳ GitHub에 접속 중...";
-      resultEl.className = "status-text";
+    <div class="btn" onclick="saveExpense()">저장</div>
+  </div>
+</div>
 
-      try {
-        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${EXPENSES_FILE}`;
-        const res = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/vnd.github.v3+json"
-          }
-        });
+<script>
+/* ========================================
+   GitHub API 설정
+======================================== */
+const GITHUB_TOKEN = "YOUR_TOKEN_HERE";  // ← 너의 토큰 입력
+const REPO_OWNER = "sicsin777-create";
+const REPO_NAME = "pwa-shinheung-expense";
 
-        if (res.ok) {
-          const data = await res.json();
-          // 단순히 성공 여부 + 파일 크기 정도만 보여줌
-          const size = data.size || 0;
-          resultEl.textContent = `✅ 연결 성공! (expenses.json 크기: ${size} bytes)`;
-          resultEl.className = "status-text status-ok";
-        } else if (res.status === 401 || res.status === 403) {
-          resultEl.textContent = "❌ 권한 오류 (401/403). 토큰 권한 또는 만료 여부를 확인하세요.";
-          resultEl.className = "status-text status-error";
-        } else if (res.status === 404) {
-          resultEl.textContent = "⚠️ 리포지토리 또는 data/expenses.json 파일을 찾을 수 없습니다. 경로나 파일을 확인하세요.";
-          resultEl.className = "status-text status-error";
-        } else {
-          resultEl.textContent = `❌ 알 수 없는 오류: HTTP ${res.status}`;
-          resultEl.className = "status-text status-error";
-        }
-      } catch (e) {
-        console.error(e);
-        resultEl.textContent = "❌ 네트워크 오류 또는 CORS 문제 발생.";
-        resultEl.className = "status-text status-error";
-      }
-    }
 
-    // ==============================
-    // (참고용) 나중에 실제 지출 저장 함수 예시
-    // ==============================
-    async function saveExpenseToGitHub(newItem) {
-      const token = getToken();
-      if (!token) {
-        alert("GitHub 토큰이 설정되어 있지 않습니다. 설정에서 토큰을 먼저 저장하세요.");
-        return;
-      }
+/* ========================================
+   Modal 기능
+======================================== */
+function openModal() {
+  document.getElementById("modalBG").style.display = "flex";
+}
 
-      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${EXPENSES_FILE}`;
+function closeModal() {
+  document.getElementById("modalBG").style.display = "none";
+}
 
-      // 1) 기존 파일 읽기
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/vnd.github.v3+json"
-        }
-      });
 
-      if (!res.ok) {
-        alert("기존 데이터를 불러오지 못했습니다. (권한 또는 파일 경로 확인)");
-        return;
-      }
+/* ========================================
+   Base64 변환
+======================================== */
+function fileToBase64(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.readAsDataURL(file);
+  });
+}
 
-      const data = await res.json();
-      const sha = data.sha;
-      // base64 → 문자열 → JSON
-      const contentStr = decodeURIComponent(escape(atob(data.content)));
-      let json;
-      try {
-        json = JSON.parse(contentStr);
-      } catch (e) {
-        json = [];
-      }
 
-      // 새 항목 추가
-      json.push(newItem);
+/* ========================================
+   GitHub에 파일 업로드 함수
+======================================== */
+async function uploadToGitHub(path, contentBase64) {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
 
-      // 다시 base64로 인코딩
-      const updatedStr = JSON.stringify(json, null, 2);
-      const updatedBase64 = btoa(unescape(encodeURIComponent(updatedStr)));
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "Update data",
+      content: contentBase64
+    })
+  });
 
-      const putRes = await fetch(url, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: "Add expense via PWA",
-          content: updatedBase64,
-          sha: sha
-        })
-      });
+  return await res.json();
+}
 
-      if (putRes.ok) {
-        alert("지출 내역이 GitHub에 저장되었습니다.");
-      } else {
-        alert("저장 실패! (HTTP " + putRes.status + ")");
-      }
-    }
 
-    // 예시: 나중에 지출 입력 폼에서 호출
-    function dummySaveTest() {
-      const testItem = {
-        writer: "테스트",
-        date: new Date().toISOString().slice(0,10),
-        category: "테스트",
-        amount: 12345,
-        memo: "테스트 저장",
-        timestamp: Date.now()
-      };
-      saveExpenseToGitHub(testItem);
-    }
+/* ========================================
+   expenses.json 불러오기
+======================================== */
+async function loadExpenses() {
+  const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/data/expenses.json`;
+  const res = await fetch(url);
+  return await res.json();
+}
 
-    // 필요하면 아래처럼 개발용으로 호출해볼 수 있음
-    // dummySaveTest();
-  </script>
+
+/* ========================================
+   지출 저장 기능
+======================================== */
+async function saveExpense() {
+  const writer = document.getElementById("writer").value;
+  const date = document.getElementById("date").value;
+  const category = document.getElementById("category").value;
+  const amount = Number(document.getElementById("amount").value);
+  const content = document.getElementById("content").value;
+  const file = document.getElementById("receiptFile").files[0];
+
+  if (!writer || !date || !amount) {
+    alert("필수항목을 입력하세요.");
+    return;
+  }
+
+  let receiptURL = "";
+
+  // ============ 이미지 업로드 ===============
+  if (file) {
+    const base64 = await fileToBase64(file);
+    const fileName = `data/receipts/${Date.now()}.png`;
+
+    const uploadResult = await uploadToGitHub(fileName, base64);
+    receiptURL = uploadResult.content.download_url;
+  }
+
+  // ============ 기존 데이터 로드 ===============
+  const expenses = await loadExpenses();
+
+  const newItem = {
+    id: Date.now(),
+    writer,
+    date,
+    category,
+    amount,
+    content,
+    receipt: receiptURL
+  };
+
+  expenses.push(newItem);
+
+  // ============ JSON 다시 업로드 ===============
+  const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(expenses, null, 2))));
+  await uploadToGitHub("data/expenses.json", jsonBase64);
+
+  alert("저장되었습니다!");
+  closeModal();
+  location.reload();
+}
+</script>
+
 </body>
 </html>
