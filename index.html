@@ -2,366 +2,534 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b3d91" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>신흥중 야구부 가계부</title>
-
-  <!-- PWA manifest -->
+  <meta name="theme-color" content="#0d47a1" />
   <link rel="manifest" href="manifest.json" />
 
   <style>
-    /* ======================================
-       폰트 & 색상 기본값
-    ====================================== */
-    :root {
-      --blue: #0b3d91;
-      --blue-light: #1f5dd1;
-      --bg: #f2f5fa;
-      --text: #333;
-      font-family: 'Noto Sans KR', sans-serif;
-    }
-
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f2f4f7;
     }
 
-    /* ======================================
-       상단 헤더
-    ====================================== */
-    .header {
-      background: linear-gradient(135deg, var(--blue), var(--blue-light));
-      color: #fff;
-      padding: 40px 20px 60px 20px;
-      border-radius: 0 0 25px 25px;
-    }
-
-    .header-title {
-      font-size: 30px;
-      font-weight: 900;
-    }
-
-    /* ======================================
-       예산 카드 영역
-    ====================================== */
-    .card-container {
-      margin-top: -40px;
-      padding: 0 15px;
+    /* 상단 앱 바 */
+    .app-bar {
+      background: linear-gradient(135deg, #0d47a1, #1976d2);
+      color: white;
+      padding: 28px 20px 40px;
+      border-bottom-left-radius: 35px;
+      border-bottom-right-radius: 35px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .app-left {
+      display: flex;
+      align-items: center;
       gap: 12px;
+    }
+
+    .app-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.15);
+      padding: 4px;
+    }
+
+    .app-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .app-subtitle {
+      margin-top: 2px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .settings-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 예산 월 선택 */
+    .month-select-container {
+      margin: 20px 15px 0;
+    }
+
+    .month-select {
+      padding: 10px 14px;
+      font-size: 15px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* 카드 3개 */
+    .cards {
+      margin-top: -12px;
+      display: flex;
+      gap: 10px;
+      padding: 0 15px;
     }
 
     .card {
       background: white;
-      padding: 18px;
-      border-radius: 16px;
+      padding: 16px;
+      border-radius: 15px;
       flex: 1;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      text-align: left;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
     }
 
     .card-title {
-      font-size: 14px;
-      color: #777;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 6px;
     }
+
     .card-value {
       font-size: 22px;
       font-weight: 700;
-      margin-top: 5px;
-      color: var(--blue);
     }
 
-    /* ======================================
-       지출 목록
-    ====================================== */
+    /* 지출 내역 */
     .section-title {
-      margin: 25px 15px 10px 15px;
-      font-size: 20px;
-      font-weight: 700;
+      margin: 25px 0 8px;
+      padding: 0 15px;
+      font-size: 18px;
+      font-weight: 600;
     }
 
-    .expense-item {
-      background: #fff;
-      margin: 10px 15px;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    .empty {
+      text-align: center;
+      padding-top: 25px;
+      font-size: 15px;
+      opacity: 0.5;
     }
 
-    .expense-top {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 700;
-    }
-    .expense-memo {
-      color: #666;
-      margin-top: 6px;
-    }
-
-    /* ======================================
-       플로팅 버튼 (지출 추가)
-    ====================================== */
+    /* 플로팅 버튼 */
     .fab {
       position: fixed;
-      bottom: 25px;
-      right: 25px;
-      width: 65px;
-      height: 65px;
+      bottom: 32px;
+      right: 24px;
+      width: 64px;
+      height: 64px;
+      background: #0d47a1;
+      color: white;
       border-radius: 50%;
-      background: var(--blue);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      font-size: 35px;
+      font-size: 36px;
+      text-align: center;
+      line-height: 64px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.25);
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      user-select: none;
     }
 
-    /* ======================================
-       📌 모달 전체 UI 개선 (키보드 대응 포함)
-    ====================================== */
+    /* ===== 설정 모달 ===== */
     .modal {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      inset: 0;
       background: rgba(0,0,0,0.45);
       display: none;
+      align-items: center;
       justify-content: center;
-      align-items: flex-end;
       z-index: 999;
     }
+
     .modal.show {
       display: flex;
     }
 
     .modal-content {
+      background: #fff;
+      width: 92%;
+      max-width: 420px;
+      border-radius: 16px;
+      padding: 18px 18px 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      border: none;
+      background: transparent;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .field-label {
+      font-size: 13px;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      color: #444;
+    }
+
+    .token-input {
       width: 100%;
-      max-height: 85vh;
-      background: white;
-      border-radius: 20px 20px 0 0;
-      padding: 20px;
-      overflow-y: auto;
-      animation: slideUp .25s ease-out;
-    }
-
-    @keyframes slideUp {
-      from { opacity:0; transform: translateY(50px);} 
-      to   { opacity:1; transform: translateY(0);}
-    }
-
-    .modal-drag {
-      width: 70px; height: 6px;
-      background:#ccc;
-      border-radius:3px;
-      margin:0 auto 15px auto;
-    }
-
-    .modal-content input,
-    .modal-content select,
-    .modal-content textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 6px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      font-size: 16px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
       box-sizing: border-box;
     }
 
-    .modal-content label {
-      margin-top: 15px;
-      display: block;
-      font-weight: 700;
+    .token-info {
+      font-size: 12px;
+      color: #777;
+      margin-top: 4px;
     }
 
-    #saveBtn {
-      width: 100%;
-      padding: 15px;
-      border-radius: 12px;
-      background: var(--blue);
-      color: white;
-      font-size: 18px;
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 9px;
+      border-radius: 8px;
       border: none;
-      margin-top: 20px;
-      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #0d47a1;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .status-text {
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .status-ok {
+      color: #16a34a;
+    }
+
+    .status-error {
+      color: #dc2626;
     }
   </style>
 </head>
-
 <body>
 
-  <!-- =======================
-       상단 헤더
-  ======================== -->
-  <div class="header">
-    <div class="header-title">신흥중 야구부</div>
-    <div>집행부 전용 가계부</div>
-
-    <div style="margin-top: 20px; font-size:18px; font-weight:700;">
-      예산 월  
-      <select id="budgetMonth" onchange="refreshDashboard()" style="
-        padding:8px; border-radius:10px; font-size:16px;">
-      </select>
+  <!-- 상단 바 -->
+  <div class="app-bar">
+    <div class="app-left">
+      <img src="icons/sh-logo.png" class="app-logo" alt="SH 로고" />
+      <div class="app-title-wrap">
+        <div class="app-title">신흥중 야구부</div>
+        <div class="app-subtitle">집행부 전용 가계부</div>
+      </div>
     </div>
+
+    <button class="settings-btn" onclick="openSettings()">
+      ⚙
+    </button>
   </div>
 
-  <!-- =======================
-       예산 카드
-  ======================== -->
-  <div class="card-container">
+  <!-- 예산 월 선택 -->
+  <div class="month-select-container">
+    <select class="month-select" id="monthSelect">
+      <!-- 실제로는 JS에서 현재 월 기준으로 채울 예정 -->
+      <option>2025 / 11</option>
+      <option>2025 / 10</option>
+      <option>2025 / 09</option>
+    </select>
+  </div>
+
+  <!-- 카드 그룹 -->
+  <div class="cards">
     <div class="card">
       <div class="card-title">이번달 예산</div>
-      <div class="card-value" id="budgetTotal">₩0</div>
+      <div class="card-value" id="budget">₩0</div>
     </div>
 
     <div class="card">
       <div class="card-title">지출 합계</div>
-      <div class="card-value" id="expenseTotal">₩0</div>
+      <div class="card-value" id="total">₩0</div>
     </div>
 
     <div class="card">
       <div class="card-title">남은 예산</div>
-      <div class="card-value" id="budgetRemain">₩0</div>
+      <div class="card-value" id="leftBudget">₩0</div>
     </div>
   </div>
 
-  <!-- =======================
-       지출 목록
-  ======================== -->
+  <!-- 지출 내역 -->
   <div class="section-title">지출 내역</div>
-  <div id="expenseList"></div>
+  <div class="empty" id="expenseEmpty">아직 등록된 내역 없음</div>
 
-  <!-- 플로팅 버튼 -->
-  <div class="fab" onclick="openModal()">＋</div>
+  <!-- 플로팅 버튼: 나중에 지출 입력 모달 연결 -->
+  <div class="fab" onclick="alert('지출 입력 모달은 다음 단계에서 붙일거야')">+</div>
 
-  <!-- =======================
-       📌 지출 등록 모달
-  ======================== -->
-  <div id="expenseModal" class="modal">
+  <!-- ===== 설정 모달 ===== -->
+  <div class="modal" id="settingsModal">
     <div class="modal-content">
-      <div class="modal-drag"></div>
+      <div class="modal-header">
+        <div class="modal-title">설정 - GitHub 토큰</div>
+        <button class="modal-close" onclick="closeSettings()">×</button>
+      </div>
 
-      <h2>지출 등록</h2>
+      <div id="tokenStatusLine" class="token-info">
+        현재 토큰 상태: <span id="tokenStatusText">없음</span>
+      </div>
 
-      <label>등록자</label>
-      <input id="inputName" placeholder="예: 이승현" />
+      <div class="field-label">새 GitHub 토큰 입력 (Fine-grained, Contents: Read & Write)</div>
+      <input id="tokenInput" class="token-input" type="password" placeholder="github_pat_..." />
 
-      <label>지출일</label>
-      <input id="inputDate" type="date" />
+      <div class="token-info">
+        - 이 토큰은 이 브라우저(localStorage)에만 저장됨<br />
+        - 만료되면 여기서 새 토큰 넣고 저장하면 됨
+      </div>
 
-      <label>카테고리</label>
-      <select id="inputCategory">
-        <option value="">카테고리 선택</option>
-        <option>식비</option>
-        <option>용품</option>
-        <option>대회비</option>
-        <option>유류비</option>
-        <option>기타</option>
-      </select>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveToken()">토큰 저장</button>
+        <button class="btn btn-secondary" onclick="testToken()">연결 테스트</button>
+        <button class="btn btn-danger" onclick="clearToken()">토큰 삭제</button>
+      </div>
 
-      <label>예산월</label>
-      <input id="inputBudget" type="month" />
-
-      <label>금액</label>
-      <input id="inputAmount" type="number" inputmode="numeric" placeholder="₩" />
-
-      <label>내용</label>
-      <textarea id="inputMemo" rows="4" placeholder="무슨 용도였는지 적어주세요"></textarea>
-
-      <button id="saveBtn" onclick="saveExpense()">저장하기</button>
-
+      <div id="testResult" class="status-text"></div>
     </div>
   </div>
 
-  <!-- =======================
-       JS - 중심 로직
-  ======================== -->
   <script>
-    let expenses = [];
+    // ==============================
+    // GitHub 저장 설정
+    // ==============================
+    const OWNER = "sicsin777-create";  // 네 깃허브 아이디
+    const REPO = "pwa-shinheung-expense"; // 리포 이름
+    const EXPENSES_FILE = "data/expenses.json";
 
-    // 모달 열기/닫기
-    function openModal() {
-      document.getElementById("expenseModal").classList.add("show");
-    }
-    function closeModal() {
-      document.getElementById("expenseModal").classList.remove("show");
-    }
-
-    // 외부 클릭 시 닫기
-    window.onclick = (e) => {
-      if (e.target.classList.contains("modal")) closeModal();
-    };
-
-    // 예산 월 드롭다운
-    function initBudgetMonth() {
-      const now = new Date();
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, "0");
-
-      document.getElementById("budgetMonth").innerHTML = `
-        <option value="${yyyy}-${mm}">${yyyy}/${mm}</option>
-      `;
+    // ------------------------------
+    // 토큰 관련 유틸
+    // ------------------------------
+    function getToken() {
+      return localStorage.getItem("GH_PWA_TOKEN") || "";
     }
 
-    // 저장
-    function saveExpense() {
-      const item = {
-        name: inputName.value,
-        date: inputDate.value,
-        category: inputCategory.value,
-        budget: inputBudget.value,
-        amount: Number(inputAmount.value),
-        memo: inputMemo.value,
-      };
-
-      expenses.push(item);
-      closeModal();
-      renderExpenses();
-      refreshDashboard();
+    function setToken(token) {
+      localStorage.setItem("GH_PWA_TOKEN", token);
     }
 
-    // 대시보드 업데이트
-    function refreshDashboard() {
-      let month = document.getElementById("budgetMonth").value;
-
-      let filtered = expenses.filter(x => x.budget === month);
-      let total = filtered.reduce((sum, x) => sum + x.amount, 0);
-
-      document.getElementById("budgetTotal").textContent = "₩0";  // 필요하면 연동
-      document.getElementById("expenseTotal").textContent = "₩" + total.toLocaleString();
-      document.getElementById("budgetRemain").textContent = "₩" + (0 - total).toLocaleString();
+    function maskToken(token) {
+      if (!token) return "없음";
+      if (token.length <= 8) return "****";
+      return token.slice(0, 4) + "..." + token.slice(-4);
     }
 
-    // 지출 목록
-    function renderExpenses() {
-      let html = "";
-      for (let x of expenses) {
-        html += `
-          <div class="expense-item">
-            <div class="expense-top">
-              <div>${x.category}</div>
-              <div>₩${x.amount.toLocaleString()}</div>
-            </div>
-            <div class="expense-memo">${x.memo}</div>
-          </div>
-        `;
+    // ------------------------------
+    // 설정 모달
+    // ------------------------------
+    function openSettings() {
+      const token = getToken();
+      const tokenStatusText = document.getElementById("tokenStatusText");
+      tokenStatusText.textContent = token ? `저장됨 (${maskToken(token)})` : "없음";
+      document.getElementById("tokenInput").value = "";
+      document.getElementById("testResult").textContent = "";
+      document.getElementById("testResult").className = "status-text";
+      document.getElementById("settingsModal").classList.add("show");
+    }
+
+    function closeSettings() {
+      document.getElementById("settingsModal").classList.remove("show");
+    }
+
+    function saveToken() {
+      const input = document.getElementById("tokenInput").value.trim();
+      if (!input) {
+        alert("토큰을 입력해 주세요.");
+        return;
       }
-      document.getElementById("expenseList").innerHTML = html;
+      setToken(input);
+      alert("토큰이 저장되었습니다.");
+      const tokenStatusText = document.getElementById("tokenStatusText");
+      tokenStatusText.textContent = `저장됨 (${maskToken(input)})`;
+      document.getElementById("tokenInput").value = "";
     }
 
-    // 초기화
-    initBudgetMonth();
-  </script>
-
-  <!-- PWA 등록 -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js");
+    function clearToken() {
+      if (!confirm("정말 토큰을 삭제할까요? 저장 기능이 동작하지 않습니다.")) return;
+      localStorage.removeItem("GH_PWA_TOKEN");
+      document.getElementById("tokenStatusText").textContent = "없음";
+      document.getElementById("testResult").textContent = "";
+      document.getElementById("testResult").className = "status-text";
+      alert("토큰이 삭제되었습니다.");
     }
-  </script>
 
+    // ------------------------------
+    // GitHub 연동 테스트
+    // ------------------------------
+    async function testToken() {
+      const token = getToken();
+      const resultEl = document.getElementById("testResult");
+
+      if (!token) {
+        resultEl.textContent = "❌ 토큰이 저장되어 있지 않습니다. 먼저 토큰을 저장해 주세요.";
+        resultEl.className = "status-text status-error";
+        return;
+      }
+
+      resultEl.textContent = "⏳ GitHub에 접속 중...";
+      resultEl.className = "status-text";
+
+      try {
+        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${EXPENSES_FILE}`;
+        const res = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.github.v3+json"
+          }
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          // 단순히 성공 여부 + 파일 크기 정도만 보여줌
+          const size = data.size || 0;
+          resultEl.textContent = `✅ 연결 성공! (expenses.json 크기: ${size} bytes)`;
+          resultEl.className = "status-text status-ok";
+        } else if (res.status === 401 || res.status === 403) {
+          resultEl.textContent = "❌ 권한 오류 (401/403). 토큰 권한 또는 만료 여부를 확인하세요.";
+          resultEl.className = "status-text status-error";
+        } else if (res.status === 404) {
+          resultEl.textContent = "⚠️ 리포지토리 또는 data/expenses.json 파일을 찾을 수 없습니다. 경로나 파일을 확인하세요.";
+          resultEl.className = "status-text status-error";
+        } else {
+          resultEl.textContent = `❌ 알 수 없는 오류: HTTP ${res.status}`;
+          resultEl.className = "status-text status-error";
+        }
+      } catch (e) {
+        console.error(e);
+        resultEl.textContent = "❌ 네트워크 오류 또는 CORS 문제 발생.";
+        resultEl.className = "status-text status-error";
+      }
+    }
+
+    // ==============================
+    // (참고용) 나중에 실제 지출 저장 함수 예시
+    // ==============================
+    async function saveExpenseToGitHub(newItem) {
+      const token = getToken();
+      if (!token) {
+        alert("GitHub 토큰이 설정되어 있지 않습니다. 설정에서 토큰을 먼저 저장하세요.");
+        return;
+      }
+
+      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${EXPENSES_FILE}`;
+
+      // 1) 기존 파일 읽기
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github.v3+json"
+        }
+      });
+
+      if (!res.ok) {
+        alert("기존 데이터를 불러오지 못했습니다. (권한 또는 파일 경로 확인)");
+        return;
+      }
+
+      const data = await res.json();
+      const sha = data.sha;
+      // base64 → 문자열 → JSON
+      const contentStr = decodeURIComponent(escape(atob(data.content)));
+      let json;
+      try {
+        json = JSON.parse(contentStr);
+      } catch (e) {
+        json = [];
+      }
+
+      // 새 항목 추가
+      json.push(newItem);
+
+      // 다시 base64로 인코딩
+      const updatedStr = JSON.stringify(json, null, 2);
+      const updatedBase64 = btoa(unescape(encodeURIComponent(updatedStr)));
+
+      const putRes = await fetch(url, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: "Add expense via PWA",
+          content: updatedBase64,
+          sha: sha
+        })
+      });
+
+      if (putRes.ok) {
+        alert("지출 내역이 GitHub에 저장되었습니다.");
+      } else {
+        alert("저장 실패! (HTTP " + putRes.status + ")");
+      }
+    }
+
+    // 예시: 나중에 지출 입력 폼에서 호출
+    function dummySaveTest() {
+      const testItem = {
+        writer: "테스트",
+        date: new Date().toISOString().slice(0,10),
+        category: "테스트",
+        amount: 12345,
+        memo: "테스트 저장",
+        timestamp: Date.now()
+      };
+      saveExpenseToGitHub(testItem);
+    }
+
+    // 필요하면 아래처럼 개발용으로 호출해볼 수 있음
+    // dummySaveTest();
+  </script>
 </body>
 </html>
